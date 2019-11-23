@@ -39,7 +39,7 @@ def complexjoint_term(dofs, dimension, in_vertex,weights,rawjoint,s):
                 #print dof_order[int(flag/3)-2][0][0]
                 # out_v = np.add(out_v, np.dot(temp,dofs[b][i])*w[b]*x[b][i])
                 #print w[dof_order[int(flag/3)][0][0]]
-                A[:, flag][:3] = np.dot(temp, i)*w[dofs[int(flag/3)-2][0][0]]
+                A[:, flag][:3] = np.dot(temp, i)*w[dofs[int(flag/3)][0][0]]
                 #if(v==12):
                   #print w[dof_order[int(flag/3)][0][0]]
                 flag += 1
