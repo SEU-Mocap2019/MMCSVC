@@ -6,6 +6,7 @@ import cv2
 import smpl_np as smpl
 import time
 import ctypes
+import loadfile
 from copy import deepcopy
 
 def points_resize(points, scale, offset):
