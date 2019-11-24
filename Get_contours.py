@@ -48,5 +48,5 @@ def get_contour(vertices, faces, magnification):
 if __name__ == '__main__':
     mod=smpl.SMPLModel('./model.pkl')
     im = get_contour(mod.verts,mod.faces,500)
-    #cv2.imshow('im',im)
-    #cv2.waitKey(0)
+    cv2.imshow('im',im)
+    cv2.waitKey(0)
