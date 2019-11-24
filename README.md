@@ -13,5 +13,5 @@ For example:
 MMCSVC.pth:
 /home/roy/MMCSVC/src 
 ps:
-    please don't put our project in Chinese directory       
+    please don't put our project in Chinese directory    
 # Acknowledgment
