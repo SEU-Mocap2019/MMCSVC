@@ -1,9 +1,10 @@
 #coding:utf-8
+
 import collections
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt 
 import numpy as np
 import cv2
-import smpl_np as smpl
+import smpl.smpl_np as smpl
 import time
 import ctypes
 from copy import deepcopy
@@ -37,7 +38,7 @@ def get_contour(vertices, faces, magnification):
     #         cv2.line(im,(coor[v][0],coor[v][1]),(coor[v+1][0],coor[v+1][1]),255,1)
     for f in faces:
         cv2.line(im,(coor[f[0]][0],coor[f[0]][1]),(coor[f[1]][0],coor[f[1]][1]),255,1)
-        cv2.line(im,(coor[f[0]][0],coor[f[0]][1]),(coor[f[2]][0],coor[f[2]][1]),255,1)
+        cv2.line( im,(coor[f[0]][0],coor[f[0]][1]),(coor[f[2]][0],coor[f[2]][1]),255,1)
         cv2.line(im,(coor[f[2]][0],coor[f[2]][1]),(coor[f[1]][0],coor[f[1]][1]),255,1)
     cv2.imshow('im',im)
     cv2.waitKey(0)
@@ -47,8 +48,9 @@ def get_contour(vertices, faces, magnification):
 
 if __name__ == '__main__':
     #方便上传 把pkl文件放到上级目录下
-    mod=smpl.SMPLModel('../model.pkl')
+    mod=smpl.SMPLModel('../model/model.pkl')
     im = get_contour(mod.verts,mod.faces,500)
+    
     #cv2.imshow('im',im)
     #cv2.waitKey(0)
 
@@ -72,7 +74,7 @@ if __name__ == '__main__':
 
     X = (ctypes.c_int*len(x))(*x)
     
-    y = [1,2,3,4,5,6,7,8,9,10]
+    y = [1,2,3,4,5,6,7,8,9,10] 
 
     Y = (ctypes.c_int*len(y))(*y)
 
@@ -81,6 +83,6 @@ if __name__ == '__main__':
 
     for i in range(len(x)):
         print X[i]," ",Y[i]
-    img=cv2.imread("002err1.jpg")
+    img=cv2.imread("../data/mask/002err1.jpg")
     cv2.imshow('img',img)
     cv2.waitKey(0)

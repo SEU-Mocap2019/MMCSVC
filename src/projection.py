@@ -1,9 +1,11 @@
 #coding:utf-8
+import sys
+sys.path.append(".")
 import collections
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
-import smpl_np as smpl
+import smpl.smpl_np as smpl
 import time
 import ctypes
 import loadfile

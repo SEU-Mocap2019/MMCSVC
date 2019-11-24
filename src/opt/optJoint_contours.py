@@ -1,15 +1,17 @@
 #coding:utf-8
+#import sys
+#sys.path.append(".")
 import collections
 import matplotlib.pyplot as plt
 import numpy as np
-import smpl_np as mysmpl
+import smpl.smpl_np as mysmpl
 import time
 from copy import deepcopy
 import math
-from Get_joint import *
-from Get_contours import *
+from joints.Get_joint import *
+from contours.Get_contours import *
 from projection import *
-from lbs import global_rigid_transformation
+from smpl.lbs import global_rigid_transformation
 
 def complexjoint_term(dofs, dimension, in_vertex,weights,rawjoint,s):
     AtA = np.zeros((dimension, dimension))
@@ -85,15 +87,9 @@ def simplesolveLasso(AtA, Atb, t):
 
 #####全局处理
 S_jointTerm=100
-d3_local_bones =[16,18,20,17,19,21,1,4,7,2,5,8,15] #目标点
+d3_local_bones =[18,20] #[16,18,20,17,19,21,1,4,7,2,5,8,15] 目标点
 #扩增doforder
-#mydof_order=[[[16],[0,1,2]],[[18],[0,1,2]],[[1],[0,1,2]],[[4],[0,1,2]]] #优化目标关节
-mydof_order = [[[16],[0,1,2]],[[18],[0,1,2]],[[17],[0,1,2]],\
-[[19],[0,1,2]],[[1],[0,1,2]],[[4],[0,1,2]],\
-[[2],[0,1,2]],[[5],[0,1,2]]]
-mydof_order = [[[16],[0,1,2]],[[18],[0,1,2]],[[20],[0,1,2]],[[17],[0,1,2]],\
-[[19],[0,1,2]],[[21],[0,1,2]],[[12],[0,1,2]],[[15],[0,1,2]],[[1],[0,1,2]],[[4],[0,1,2]],[[7],[0,1,2]],\
-[[2],[0,1,2]],[[5],[0,1,2]],[[8],[0,1,2]],[[9],[0,1,2]],[[6],[0,1,2]],[[3],[0,1,2]],[[0],[0,1,2]]]
+mydof_order=[[[16],[0,1,2]],[[18],[0,1,2]]] #优化目标关节
 dimension = 0
 for d in mydof_order:
     for d1 in d[1]:
@@ -101,41 +97,41 @@ for d in mydof_order:
 
 
 if __name__ == '__main__':
-    mod = mysmpl.SMPLModel('./model.pkl')
+    mod = mysmpl.SMPLModel('../model/model.pkl')
     pose = np.zeros(mod.pose_shape)
     mod.set_params(beta=mod.beta, pose=pose, trans=mod.trans)
-    mod.save_to_obj('./test.obj')
+    mod.save_to_obj('../data/outputobj/test.obj')
+
 
     (_, A_global) = global_rigid_transformation(mod.pose, mod.J, mod.kintree_table,xp=np)
     #注意这个函数应该在tpose下调用应该才对
     local_joints, joint_weights = get_d3joint_and_weights_from_bone(mod.parent, d3_local_bones,pose,mod)
 
     local_bone_weights = load_skinning_weights(mod.parent, joint_weights)
-
+    
     #weights代表了按照上面d3_local_bones的顺序所包含的节点权重
     weights=local_bone_weights
     vertex=local_joints
-    for i in range(len(vertex)):
-        vertex[i]=A_global[d3_local_bones[i]][:, 3][:3]
-    print len(d3_local_bones)
-    print len(vertex)
-    J=deepcopy(vertex)
+    vertex[0]=A_global[18][:, 3][:3]
+    vertex[1]=A_global[20][:, 3][:3]
+
     tar=deepcopy(vertex)
-    print len(tar)
+    ########
     #调整目标点
     ########
-    tar[0][0]+=0.1
-    tar[1][0]+=0.2
-    tar[2][1]-=0.3
-    #tar[5][0]+=0.1
-    tar[5][1]+=0.2
-    tar[7][0]+=0.1
-    tar[11][0]-=0.1
-    tar[12][0]-=0.04
-    ########
 
-
+    J18= A_global[18][:, 3][:3]
+    J20= A_global[20][:, 3][:3]
+    tar18=J18
+    tar18[1]=tar18[1]+0.2
+    tar20=[J18[0],J18[1]+(J20[0]-J18[0]),0]
+    #tar20=[J18[0]+(J20[0]-J18[0])/1.414+10,J18[1]-(J20[0]-J18[0])/1.414-10,0]
+    tar[0]=tar18
+    tar[1] = tar20
     tar = points_resize(tar, 1000, [0, 100, 100])
+
+
+
     get_contour(mod.verts, mod.faces, 400)  # 可视化
 
     while (1):
@@ -144,8 +140,9 @@ if __name__ == '__main__':
         (_, A_global) = global_rigid_transformation(mod.pose, mod.J, mod.kintree_table, xp=np)
         for i in range(len(vertex)):
             vertex[i] = A_global[d3_local_bones[i]][:, 3][:3]
-        
+
         vertex = points_resize(vertex, 1000, [0, 100, 100])
+
         dofs = get_twist(A_global, mydof_order)
 
 
@@ -158,13 +155,25 @@ if __name__ == '__main__':
         #np.linalg.inv(np.dot(np.transpose(AtA),AtA))*np.transpose(AtA)
 
         x=simplesolveLasso(AtA,Atb,1)
+
+
         #print np.dot(AtA,x)
         print x
+        """
+        pose[16][0]-=x[0]
+        pose[16][1]-=x[1]
+        pose[16][2]-=x[2]
+        pose[18][0]-=x[3]
+        pose[18][1]-=x[4]
+        pose[18][2]-=x[5]
+        """
 
         for i in range(dimension):
+
             pose[mydof_order[int(i/3)][0][0]][i%3] -= x[i]
 
         mod.set_params(beta=mod.beta, pose=pose, trans=mod.trans)
-        mod.save_to_obj('./test.obj')
+
+        mod.save_to_obj('../data/outputobj/test.obj')
         get_contour(mod.verts, mod.faces, 400)  # 可视化
 #之前解出来的z正负的情况 对比 乘进A 看看结果

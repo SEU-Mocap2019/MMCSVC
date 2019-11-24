@@ -113,7 +113,7 @@ Point pointTest( InputArray _contour, Point2f pt, bool measureDist ,double & min
 void test(int*x, int*y,int shape)
 {
 
-  Mat src = imread("002err1.jpg");
+  Mat src = imread("../data/mask/002err1.jpg");
   Mat src_gray;
   cvtColor( src, src_gray, CV_BGR2GRAY );
   blur( src_gray, src_gray, Size(3,3) );
@@ -135,9 +135,9 @@ vector<Point> test;
 
   findContours( canny_output, contours, hierarchy, RETR_TREE, CHAIN_APPROX_NONE);
 Mat allContoursResult(src_copy.size(), CV_8U, cv::Scalar(255));  
-  drawContours(allContoursResult,contours,-1,Scalar(0),2);
+  //drawContours(allContoursResult,contours,-1,Scalar(0),2);
   //cout<<contours[0]<<" "<<contours[1]<<endl<<endl;
-  imshow("allContours",allContoursResult);
+  //imshow("allContours",allContoursResult);
   //Mat drawing = Mat::zeros(src_copy.size(), CV_8UC3 );
   //drawContours(drawing, contours, 0, (0, 0, 255), hierarchy, 8, Point());
   //imshow("result", drawing);

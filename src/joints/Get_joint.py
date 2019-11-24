@@ -1,8 +1,10 @@
 #coding:utf-8
+import sys
+sys.path.append(".")
 import numpy as np
 import pickle
 from copy import deepcopy
-from lbs import global_rigid_transformation
+from smpl.lbs import global_rigid_transformation
 import cv2
 
 def load_skinning_weights(parent, w_s):
