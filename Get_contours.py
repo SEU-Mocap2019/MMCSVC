@@ -46,7 +46,41 @@ def get_contour(vertices, faces, magnification):
 
 
 if __name__ == '__main__':
-    mod=smpl.SMPLModel('./model.pkl')
+    #方便上传 把pkl文件放到上级目录下
+    mod=smpl.SMPLModel('../model.pkl')
     im = get_contour(mod.verts,mod.faces,500)
-    cv2.imshow('im',im)
+    #cv2.imshow('im',im)
     #cv2.waitKey(0)
+
+    #测试自写lib
+    """
+    x为一个list 表示点的横坐标
+    X为转化为c_type的指针
+    同理y
+    返回的结果在X与Y中 
+    读取方式与c++中读取数组相同
+    存储着与(x[i],y[i])距离最近的目标点的坐标(X[i],Y[i])
+    考虑指定优化的目标轮廓名字最好传递一个数字后缀名
+    mask自动生成的前缀写死在库中 方便传参
+    """
+    ll = ctypes.cdll.LoadLibrary
+    lib = ll("./get_dis_Point2contours.so")
+    lib.test.restype = ctypes.c_float
+    lib.fun.argtypes = [ctypes.POINTER(ctypes.c_int)]
+
+    x = [1,2,3,4,5,6,7,8,9,10]
+
+    X = (ctypes.c_int*len(x))(*x)
+    
+    y = [1,2,3,4,5,6,7,8,9,10]
+
+    Y = (ctypes.c_int*len(y))(*y)
+
+    qqq=lib.test(X,Y,len(x))
+
+
+    for i in range(len(x)):
+        print X[i]," ",Y[i]
+    img=cv2.imread("002err1.jpg")
+    cv2.imshow('img',img)
+    cv2.waitKey(0)

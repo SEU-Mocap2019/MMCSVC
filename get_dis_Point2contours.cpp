@@ -135,13 +135,13 @@ vector<Point> test;
 
   findContours( canny_output, contours, hierarchy, RETR_TREE, CHAIN_APPROX_NONE);
 Mat allContoursResult(src_copy.size(), CV_8U, cv::Scalar(255));  
-  //drawContours(allContoursResult,contours,-1,Scalar(0),2);
+  drawContours(allContoursResult,contours,-1,Scalar(0),2);
   //cout<<contours[0]<<" "<<contours[1]<<endl<<endl;
-  //imshow("allContours",allContoursResult);
+  imshow("allContours",allContoursResult);
   //Mat drawing = Mat::zeros(src_copy.size(), CV_8UC3 );
   //drawContours(drawing, contours, 0, (0, 0, 255), hierarchy, 8, Point());
   //imshow("result", drawing);
-  //waitKey(0);
+  waitKey(0);
 Point a;
 Point atemp;
 double mindistemp;
@@ -160,6 +160,7 @@ double mindis=1000000;
         //a=pointTest(contours[0],cv::Point(x[i],y[i]),true,mindis);
         x[i]=a.x;
         y[i]=a.y;
+        cout<<x[i]<<" "<<y[i]<<endl;
      }
   /// Calculate the distances to the contour
 
@@ -183,4 +184,4 @@ int fun(int *a)
 
 }
 
-//g++ -o get_Point2contours.so -shared -fPIC get_Point2contours.cpp -lopencv_core -lopencv_highgui -lopencv_imgcodecs
+//g++ -o get_dis_Point2contours.so -shared -fPIC get_dis_Point2contours.cpp -lopencv_core -lopencv_highgui -lopencv_imgcodecs
