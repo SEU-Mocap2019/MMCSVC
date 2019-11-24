@@ -141,7 +141,7 @@ Mat allContoursResult(src_copy.size(), CV_8U, cv::Scalar(255));
   //Mat drawing = Mat::zeros(src_copy.size(), CV_8UC3 );
   //drawContours(drawing, contours, 0, (0, 0, 255), hierarchy, 8, Point());
   //imshow("result", drawing);
-  waitKey(0);
+  //waitKey(0);
 Point a;
 Point atemp;
 double mindistemp;
